@@ -60,9 +60,9 @@ function sendWelcomeMessage() {
     const p = miliContext.product;
     greeting = `¡Hola! Veo que te interesó <strong>${p.product_name}</strong> de <strong>${p.carrier_name}</strong>.\n\n¿Tienes alguna pregunta sobre esta póliza o te gustaría comparar con otras opciones?`;
   } else if (miliContext.menu_subcategory) {
-    greeting = `¡Hola! Soy Mili, tu asesora de seguros en M&L.\n\nEstás en la sección de <strong>${miliContext.menu_subcategory}</strong>. ¿Qué tipo de protección estás buscando hoy?`;
+    greeting = `¡Hola! Soy Myli, tu asesora de seguros en M&L.\n\nEstás en la sección de <strong>${miliContext.menu_subcategory}</strong>. ¿Qué tipo de protección estás buscando hoy?`;
   } else {
-    greeting = `¡Hola! Soy <strong>Mili</strong>, tu asesora de seguros en Consultores M&L.\n\nEstoy aquí para ayudarte a encontrar la mejor protección sin costo de asesoría. ¿Qué te trajo por aquí hoy?`;
+    greeting = `¡Hola! Soy <strong>Myli</strong>, tu asesora de seguros en Consultores M&L.\n\nEstoy aquí para ayudarte a encontrar la mejor protección sin costo de asesoría. ¿Qué te trajo por aquí hoy?`;
   }
 
   appendBubble('mili', greeting);
@@ -138,7 +138,7 @@ async function callMiliAPI(userMessage) {
 
 /* ── Contexto del producto para el system prompt ─────────── */
 function buildProductContext() {
-  const BASE = `Eres Mili, la asesora virtual de Consultores M&L Seguros.
+  const BASE = `Eres Myli, la asesora virtual de Consultores M&L Seguros.
 Eres cercana, empática, clara y confiable — igual que la marca M&L.
 Hablas en español colombiano, en segunda persona ("tú").
 

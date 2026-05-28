@@ -104,7 +104,7 @@
       + '</div></div>'
       + '<div class="footer-bottom">'
       + '<div class="footer-copyright">&copy; 2025 Consultores de Seguros M&amp;L &mdash; Todos los derechos reservados</div>'
-      + '<div class="footer-mili-status"><span class="pulse-dot"></span>Mili IA disponible 24/7</div>'
+      + '<div class="footer-mili-status"><span class="pulse-dot"></span>Myli IA disponible 24/7</div>'
       + '</div></footer>';
   }
 
@@ -112,13 +112,13 @@
   function buildMiliShell() {
     return '<button class="mili-fab-floating" onclick="openMili()">'
       + '<div class="mili-fab-avatar-wrapper"><div class="mili-fab-avatar">M</div><div class="mili-fab-status-dot"></div></div>'
-      + '<div class="mili-fab-content"><p class="mili-fab-title">Hablar con Mili</p><p class="mili-fab-subtitle">&#9679; Respuesta inmediata</p></div>'
+      + '<div class="mili-fab-content"><p class="mili-fab-title">Hablar con Myli</p><p class="mili-fab-subtitle">&#9679; Respuesta inmediata</p></div>'
       + '</button>'
       + '<div id="miliWindow" style="display:none" class="mili-window"><div class="mili-chat">'
       + '<div class="mili-header">'
       + '<div class="mili-header-avatar">M</div>'
       + '<div class="mili-header-info">'
-      + '<p class="mili-header-name">Mili &middot; Asesora M&amp;L</p>'
+      + '<p class="mili-header-name">Myli &middot; Asesora M&amp;L</p>'
       + '<p class="mili-header-status"><span class="pulse-dot" style="width:6px;height:6px"></span>En l&iacute;nea &middot; Responde en segundos</p>'
       + '</div>'
       + '<button class="mili-close-btn" onclick="closeMili()">&#x2715;</button>'

@@ -422,7 +422,7 @@ function renderZeroCard(productType, g) {
         <button class="btn-mili-card" style="margin-top:16px"
           onclick="openMili({entry_point:'card',menu_subcategory:'${SUBCATEGORY_BY_SLUG[currentSlug]?.name || ''}',product_type:'${productType}'})">
           <i data-lucide="message-circle" width="16" height="16"></i>
-          Mili puede conseguirte una cotización
+          Myli puede conseguirte una cotización
         </button>
       </div>
     </div>
@@ -648,7 +648,7 @@ function renderPolicyModalContent(product) {
             product: ${JSON.stringify(product).replace(/'/g, "\\'")}
           })">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Hablar con Mili sobre esta póliza
+          Hablar con Myli sobre esta póliza
         </button>
         ${hasClausulado && product.clausulado_url ? `
           <a href="${product.clausulado_url}" target="_blank" rel="noopener" class="btn-clausulado">
