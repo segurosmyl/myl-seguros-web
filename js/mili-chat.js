@@ -234,12 +234,12 @@ function formatMiliText(text) {
 }
 
 function renderWhatsAppCTA() {
-  let waUrl = 'https://wa.me/57XXXXXXXXXX';
+  let waUrl = 'https://wa.me/573212414529';
   if (miliContext?.product?.whatsapp_template) {
-    waUrl = `https://wa.me/57XXXXXXXXXX?text=${encodeURIComponent(miliContext.product.whatsapp_template)}`;
+    waUrl = `https://wa.me/573212414529?text=${encodeURIComponent(miliContext.product.whatsapp_template)}`;
   } else if (miliContext?.available_products?.length) {
     const tpl = miliContext.available_products[0]?.whatsapp_template;
-    if (tpl) waUrl = `https://wa.me/57XXXXXXXXXX?text=${encodeURIComponent(tpl)}`;
+    if (tpl) waUrl = `https://wa.me/573212414529?text=${encodeURIComponent(tpl)}`;
   }
   return `<a href="${waUrl}" target="_blank" rel="noopener"
     style="display:flex;align-items:center;gap:8px;background:#25D366;color:#fff;

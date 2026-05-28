@@ -20,7 +20,7 @@
  */
 
 var SHEET_ID      = '1YivNd2BoXqwbSrrDEJNmT7ACJ1Z4RTz4YhTTqcgPhbQ';
-var NOTIFY_EMAIL  = 'erasoc@gmail.com';
+var NOTIFY_EMAIL  = 'vargash@segurosmyl.com,mateusyd@segurosmyl.com';
 var LEADS_SHEET   = 'CONTACT_LEADS';
 
 function doPost(e) {
