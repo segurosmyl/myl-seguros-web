@@ -497,6 +497,17 @@ async function loadAliadas() {
           website_url: ''
         }));
 
+    // Pin SURA and Seguros del Estado at the top, preserve remaining order
+    const PINNED_CARRIERS = ['SURA', 'Seguros del Estado'];
+    carriersToShow.sort((a, b) => {
+      const ai = PINNED_CARRIERS.indexOf(a.carrier_name);
+      const bi = PINNED_CARRIERS.indexOf(b.carrier_name);
+      if (ai !== -1 && bi !== -1) return ai - bi;
+      if (ai !== -1) return -1;
+      if (bi !== -1) return 1;
+      return 0;
+    });
+
     // Update hero stats
     document.getElementById('statCarriers').textContent = carriersToShow.length;
     document.getElementById('statProducts').textContent = products.length;
