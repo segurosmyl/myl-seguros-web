@@ -270,7 +270,7 @@ footer {
 .footer-logo { height: 48px; width: auto; object-fit: contain; margin-bottom: 12px; }
 
 .footer-info {
-  font-size: 12px; color: rgba(255,255,255,0.45);
+  font-size: 13px; color: rgba(255,255,255,0.45);
   line-height: 1.6; margin-bottom: 16px;
 }
 
@@ -289,7 +289,7 @@ footer {
 
 .footer-column-label {
   color: #C2185B;
-  font-size: 11px; font-weight: 600;
+  font-size: 12px; font-weight: 600;
   letter-spacing: 0.10em; text-transform: uppercase;
   margin-bottom: 16px;
 }
@@ -300,14 +300,14 @@ footer {
 }
 .footer-links a, .footer-links li {
   color: rgba(255,255,255,0.55);
-  text-decoration: none; font-size: 13px;
+  text-decoration: none; font-size: 14px;
   transition: color 0.2s ease;
 }
 .footer-links a:hover { color: #C2185B; }
 
 .footer-contact-item {
   display: flex; align-items: flex-start; gap: 10px;
-  margin-bottom: 12px; font-size: 13px;
+  margin-bottom: 12px; font-size: 14px;
   color: rgba(255,255,255,0.55);
 }
 .footer-contact-item svg { flex-shrink: 0; margin-top: 2px; }
@@ -318,10 +318,10 @@ footer {
   border-top: 0.5px solid rgba(255,255,255,0.06);
   display: flex; justify-content: space-between; align-items: center;
 }
-.footer-copyright { color: rgba(255,255,255,0.25); font-size: 11px; }
+.footer-copyright { color: rgba(255,255,255,0.25); font-size: 12px; }
 .footer-mili-status {
   display: flex; align-items: center; gap: 8px;
-  color: rgba(255,255,255,0.25); font-size: 11px;
+  color: rgba(255,255,255,0.25); font-size: 12px;
 }
 .footer-mili-status .pulse-dot { width: 6px; height: 6px; }
 
