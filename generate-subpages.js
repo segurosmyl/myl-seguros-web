@@ -69,7 +69,7 @@ function generatePage(subpage) {
 
 <nav id="navbar">
   <div class="container">
-    <img src="../Logo_Leon_V2_transparente.png" alt="M&L Seguros" class="nav-logo">
+    <img src="../Logo_Leon_V3_transparente.png" alt="M&L Seguros" class="nav-logo">
     <ul class="nav-menu">
       <li><a href="/">Inicio</a></li>
       <li class="has-dropdown">
@@ -171,7 +171,7 @@ function generatePage(subpage) {
 <footer>
   <div class="footer-main">
     <div>
-      <img src="../Logo_Leon_V2_transparente.png" alt="M&L Seguros" class="footer-logo">
+      <img src="../Logo_Leon_V3_transparente.png" alt="M&L Seguros" class="footer-logo">
       <p class="footer-info">Consultores de Seguros · Bogotá, Colombia<br>NIT: 901331365-1</p>
       <div class="social-icons">
         <a href="#" class="social-icon" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>

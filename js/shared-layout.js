@@ -24,7 +24,7 @@
         + '<div class="mega-menu">' + cols + '</div></li>';
     }).join('');
     return '<nav id="navbar"><div class="container">'
-      + '<a href="/"><img src="/Logo_Leon_V2_transparente.png" alt="M&amp;L Seguros" class="nav-logo"></a>'
+      + '<a href="/"><img src="/Logo_Leon_V3_transparente.png" alt="M&amp;L Seguros" class="nav-logo"></a>'
       + '<ul class="nav-menu"><li><a href="/">Inicio</a></li>' + items
       + '<li><a href="/comparar/">Comparar</a></li>'
       + '<li><a href="/aliadas/">Aliadas</a></li></ul>'
@@ -57,7 +57,7 @@
     return '<div id="navMobileOverlay" class="nav-mobile-overlay">'
       + '<div class="nav-mobile-drawer">'
       + '<div class="nav-mobile-header">'
-      + '<a href="/"><img src="/Logo_Leon_V2_transparente.png" alt="M&amp;L Seguros" class="nav-mobile-logo"></a>'
+      + '<a href="/"><img src="/Logo_Leon_V3_transparente.png" alt="M&amp;L Seguros" class="nav-mobile-logo"></a>'
       + '<button class="nav-mobile-close" id="navMobileClose" aria-label="Cerrar men&uacute;">&#x2715;</button>'
       + '</div>'
       + '<ul class="nav-mobile-links">' + lis + '</ul>'
@@ -79,7 +79,7 @@
   function buildFooter() {
     return '<footer><div class="footer-main">'
       + '<div>'
-      + '<a href="/"><img src="/Logo_Leon_V2_transparente.png" alt="M&amp;L Seguros" class="footer-logo"></a>'
+      + '<a href="/"><img src="/Logo_Leon_V3_transparente.png" alt="M&amp;L Seguros" class="footer-logo"></a>'
       + '<p class="footer-info">Consultores de Seguros &middot; Bogot&aacute;, Colombia<br>NIT: 901331365-1</p>'
       + '<div class="social-icons">'
       + '<a href="https://www.facebook.com/people/Isagis-Technologies/61576177173753/" class="social-icon" aria-label="Facebook" target="_blank" rel="noopener">' + svgFb() + '</a>'
