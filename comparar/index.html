@@ -463,6 +463,16 @@ let currentFilter = 'TODOS';
 let currentSubcat = null;
 let currentProductType = null;
 
+const PRIORITY_CARRIERS = ['SURA', 'Seguros del Estado'];
+function prioritizeCarriers(items) {
+  const pinned = [];
+  PRIORITY_CARRIERS.forEach(name => {
+    items.filter(p => p.carrier_name === name).forEach(p => pinned.push(p));
+  });
+  const rest = items.filter(p => !PRIORITY_CARRIERS.includes(p.carrier_name));
+  return [...pinned, ...rest];
+}
+
 async function loadProducts() {
   try {
     const products = await window.sheetsClient.getProducts({ is_active: '1' });
@@ -555,7 +565,10 @@ function renderProductGrid() {
     return;
   }
 
-  grid.innerHTML = filtered.map(p => {
+  // Apply priority: SURA first, Seguros del Estado second, rest unchanged
+  const prioritized = prioritizeCarriers(filtered);
+
+  grid.innerHTML = prioritized.map(p => {
     const isSelected = selectedIds.includes(p.product_id);
     const isDisabled = !isSelected && selectedIds.length >= 3;
     const logoSrc = p.logo_filename ? `../logos/${p.logo_filename}` : '';

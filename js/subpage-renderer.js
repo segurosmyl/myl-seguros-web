@@ -11,6 +11,21 @@ let productMap = {};     // product_id → product (para el modal)
 let currentSlug = '';
 let currentGobernanza = null;
 
+/* ── Carrier priority rule ───────────────────────────────── */
+// SURA always first, Seguros del Estado always second.
+// All other carriers preserve their existing relative order.
+// Works with product objects (item.carrier_name) or plain strings.
+const PRIORITY_CARRIERS = ['SURA', 'Seguros del Estado'];
+function prioritizeCarriers(items) {
+  const getName = item => typeof item === 'string' ? item : item.carrier_name;
+  const pinned = [];
+  PRIORITY_CARRIERS.forEach(name => {
+    items.filter(item => getName(item) === name).forEach(item => pinned.push(item));
+  });
+  const rest = items.filter(item => !PRIORITY_CARRIERS.includes(getName(item)));
+  return [...pinned, ...rest];
+}
+
 /* ── Punto de entrada ────────────────────────────────────── */
 async function initSubpage(slug) {
   currentSlug = slug;
@@ -348,7 +363,7 @@ function renderLogoChipsAll(items, byCarrier) {
 
   // Global dedup: one chip per carrier, featured carriers first
   const seen = new Set();
-  const sorted = [
+  const deduped = [
     ...items.filter(p => featuredCarriers.has(p.carrier_name)),
     ...items.filter(p => !featuredCarriers.has(p.carrier_name)),
   ].filter(p => {
@@ -356,6 +371,9 @@ function renderLogoChipsAll(items, byCarrier) {
     seen.add(p.carrier_name);
     return true;
   });
+
+  // Apply priority: SURA first, Seguros del Estado second, rest unchanged
+  const sorted = prioritizeCarriers(deduped);
 
   return sorted.map(p => {
     const carrierItems = byCarrier[p.carrier_name] || [p];
@@ -448,20 +466,23 @@ function renderCarriersStrip(products) {
   const strip = document.getElementById('carriersStrip');
   if (!strip) return;
 
-  const uniqueCarriers = [];
+  const uniqueCarriersRaw = [];
   const seen = new Set();
 
   products.forEach(p => {
     if (!seen.has(p.carrier_name)) {
       seen.add(p.carrier_name);
-      uniqueCarriers.push(p.carrier_name);
+      uniqueCarriersRaw.push(p.carrier_name);
     }
   });
 
-  if (!uniqueCarriers.length) {
+  if (!uniqueCarriersRaw.length) {
     strip.style.display = 'none';
     return;
   }
+
+  // Apply priority: SURA first, Seguros del Estado second, rest unchanged
+  const uniqueCarriers = prioritizeCarriers(uniqueCarriersRaw);
 
   const logos = uniqueCarriers.map(name => {
     const product = products.find(p => p.carrier_name === name);
