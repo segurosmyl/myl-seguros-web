@@ -124,7 +124,7 @@ nav#navbar {
   top: 0;
   z-index: 1000;
   background: #1A1A2E;
-  height: 80px;
+  height: 92px;
   display: flex;
   align-items: center;
   transition: box-shadow 0.25s ease;
@@ -139,7 +139,7 @@ nav#navbar .container {
 }
 
 .nav-logo {
-  height: 72px; width: auto;
+  height: 88px; width: auto;
   margin-left: 16px;
   object-fit: contain;
 }
@@ -267,7 +267,7 @@ footer {
   gap: 40px;
 }
 
-.footer-logo { height: 64px; width: auto; object-fit: contain; margin-bottom: 6px; }
+.footer-logo { height: 84px; width: auto; object-fit: contain; margin-bottom: 6px; }
 
 .footer-info {
   font-size: 13px; color: rgba(255,255,255,0.45);
@@ -1482,7 +1482,7 @@ transition: all 0.25s ease;
   min-height: 64px;
   flex-shrink: 0;
 }
-.nav-mobile-logo { height: 57px; width: auto; object-fit: contain; }
+.nav-mobile-logo { height: 72px; width: auto; object-fit: contain; }
 
 .nav-mobile-close {
   background: none; border: none;
