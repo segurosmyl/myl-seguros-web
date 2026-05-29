@@ -267,7 +267,7 @@ footer {
   gap: 40px;
 }
 
-.footer-logo { height: 84px; width: auto; object-fit: contain; margin-bottom: 6px; }
+.footer-logo { height: 84px; width: auto; object-fit: contain; margin-bottom: 0; vertical-align: top; }
 
 .footer-info {
   font-size: 13px; color: rgba(255,255,255,0.45);
