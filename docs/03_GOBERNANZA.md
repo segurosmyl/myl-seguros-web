@@ -51,7 +51,7 @@ AUTOS → Vehículos Particulares → Seguro de Autos → Seguro de Autos Livian
 
 ### 3.1 Subcategoría: Individual
 
-> **descripcion_subcategoria:** Protege económicamente a tu familia y a ti mismo con seguros de vida que van mucho más allá de la cobertura básica. Encuentra pólizas de vida tradicionales con ahorro programado, respaldo ante enfermedades graves como cáncer o Alzheimer, auxilios económicos en efectivo por hospitalización o desempleo, y coberturas que cancelan el saldo de tus deudas ante fallecimiento o incapacidad. SURA, Seguros Bolívar, MAPFRE, AXA Colpatria y más te acompañan en cada etapa de la vida.
+> **descripcion_subcategoria:** Protege económicamente a tu familia y a ti mismo con seguros de vida que van mucho más allá de la cobertura básica. Encuentra pólizas de vida individual o tradicionales con ahorro programado, respaldo ante enfermedades graves como cáncer o Alzheimer, auxilios económicos en efectivo por hospitalización o desempleo, y coberturas que cancelan el saldo de tus deudas ante fallecimiento o incapacidad. SURA, Seguros Bolívar, MAPFRE, AXA Colpatria y más te acompañan en cada etapa de la vida.
 >
 > **frase_impacto:** "Porque lo que más importa merece la mayor protección."
 >

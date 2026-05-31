@@ -567,5 +567,6 @@ assets/banners/
 00_BRAND_SYSTEM.md
 02_SUBPAGE_TEMPLATE.md
 03_GOBERNANZA.md
-05_MILI_SPEC.md
+Mili_Phase_1_Assistant.md
+Mili Architecture Decisions.md
 ```
