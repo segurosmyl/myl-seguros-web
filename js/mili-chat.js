@@ -7,8 +7,11 @@
    NUNCA exponer la API key en el frontend.
    ============================================================ */
 
+const MYLI_WEBHOOK = 'https://n8n.segurosmyl.com/webhook/myli-chat';
+
 /* ── Estado del chat ─────────────────────────────────────── */
 let miliContext = null;
+let miliSessionId = null;
 let miliHistory = [];
 let miliTyping = false;
 
@@ -30,6 +33,7 @@ function openMili(ctx = {}) {
 
   // Limpiar si es una nueva sesión
   if (miliHistory.length === 0) {
+    miliSessionId = 'myli_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
     clearMessages();
     renderQuickChips();
     sendWelcomeMessage();
@@ -109,31 +113,40 @@ async function sendMiliUserMessage(text) {
   }
 }
 
-/* ── Llamada al proxy backend ────────────────────────────── */
+/* ── Llamada al webhook de producción (n8n) ──────────────── */
 async function callMiliAPI(userMessage) {
-  const productContext = buildProductContext();
-
-  // PRODUCCIÓN: llamar a /api/mili (Cloudflare Worker o servidor Node.js)
-  // El worker guarda la API key de Anthropic de forma segura.
-  //
-  // Para desarrollo local sin proxy: descomentar el mock de abajo.
-
-  const response = await fetch('/api/mili', {
+  const response = await fetch(MYLI_WEBHOOK, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      system_context: productContext,
-      messages: miliHistory,
+      sessionId: miliSessionId,
+      message: userMessage,
+      pageContext: buildPageContext(),
     }),
   });
 
   if (!response.ok) {
-    // Fallback amigable si el proxy no está disponible
     throw new Error(`API ${response.status}`);
   }
 
   const data = await response.json();
-  return data.response || data.content || 'Entendido. ¿En qué más puedo ayudarte?';
+  return data.output || data.response || data.message || data.content || 'Entendido. ¿En qué más puedo ayudarte?';
+}
+
+/* ── Contexto de página para el webhook ──────────────────── */
+function buildPageContext() {
+  if (!miliContext) return {};
+  const ctx = {
+    entry_point: miliContext.entry_point || 'fab',
+    menu_category: miliContext.menu_category || '',
+    menu_subcategory: miliContext.menu_subcategory || '',
+    product_type: miliContext.product_type || '',
+  };
+  if (miliContext.product) {
+    ctx.product_name = miliContext.product.product_name;
+    ctx.carrier_name = miliContext.product.carrier_name;
+  }
+  return ctx;
 }
 
 /* ── Contexto del producto para el system prompt ─────────── */
@@ -291,6 +304,7 @@ function clearMessages() {
 
 /* ── Nueva conversación ──────────────────────────────────── */
 function resetMili() {
+  miliSessionId = 'myli_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
   clearMessages();
   const chipsEl = document.getElementById('miliQuickChips');
   if (chipsEl) chipsEl.style.display = 'flex';
