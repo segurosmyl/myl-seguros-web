@@ -3,7 +3,7 @@
  * Google Apps Script Web App
  *
  * DEPLOYMENT STEPS:
- * 1. Open Google Sheets: https://docs.google.com/spreadsheets/d/1YivNd2BoXqwbSrrDEJNmT7ACJ1Z4RTz4YhTTqcgPhbQ
+ * 1. Open Google Sheets: https://docs.google.com/spreadsheets/d/1t6ixz8gSDM2Yg14NggwuNru7Mid2npAR9AaxOvkccgc
  * 2. Extensions → Apps Script
  * 3. Paste this entire file, replacing any existing code
  * 4. Save (Ctrl+S)
@@ -19,7 +19,7 @@
  * on first submission if it doesn't already exist.
  */
 
-var SHEET_ID      = '1YivNd2BoXqwbSrrDEJNmT7ACJ1Z4RTz4YhTTqcgPhbQ';
+var SHEET_ID      = '1t6ixz8gSDM2Yg14NggwuNru7Mid2npAR9AaxOvkccgc';
 var NOTIFY_EMAIL  = 'vargash@segurosmyl.com,mateusyd@segurosmyl.com';
 var LEADS_SHEET   = 'CONTACT_LEADS';
 
