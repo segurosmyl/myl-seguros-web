@@ -479,6 +479,153 @@ git push new-origin main
 
 ---
 
+# Phase 1 Closure Summary
+
+**Closure date:** 2026-06-09
+**Stable commit:** `1cb5b7a` (portal web) + Myli n8n workflows validated in production
+**Status:** FASE 1 CERRADA — ambos proyectos (Portal Web + Myli V1.0) en producción.
+
+---
+
+## Work Completed on 2026-06-09
+
+### Portal Web — Changes
+
+| Cambio | Archivo | Commit |
+|---|---|---|
+| Finesa eliminada del marquee home (2 instancias) | `index.html` | `39fa02d` |
+| Finesa eliminada del mapa CARRIER_URLS aliadas | `aliadas/index.html` | `39fa02d` |
+| Enlace de privacidad corregido en formulario contacto | `contacto/index.html:369` | `39fa02d` |
+| Flujo de consentimiento híbrido Myli implementado | `js/mili-chat.js` | `39fa02d` |
+| Campo `privacyConsented` en payload n8n | `js/mili-chat.js` | `39fa02d` |
+| Texto del aviso de consentimiento aprobado por cliente | `js/mili-chat.js` | `0d3fbdb`, `3505059` |
+| Botones de consentimiento: outline → rojo al presionar | `js/mili-chat.js` | `1cb5b7a` |
+| Imagen aliadas `v4` → `v5` | `index.html`, `.gitignore` | `8e817bc` |
+
+### Myli V1.0 — Changes (n8n)
+
+| Cambio | Detalle |
+|---|---|
+| Motor IA | GPT-4.1-mini + Window Buffer Memory (20 mensajes) |
+| 5 herramientas activas | `lead_capture`, `product_knowledge`, `human_handoff`, `appointment_booking` (placeholder), `analytics_event` (placeholder) |
+| Schema CONTACT_LEADS | Expandido de 8 a 14 columnas |
+| Nuevas columnas | Conversación Completa, Resumen, Horario de Contacto, Canal de Contacto, Placa de Vehiculo, Ciudad de Movilidad |
+| Privacidad en system prompt | Sección `## PRIVACIDAD — REGLA CRÍTICA` — el agente no registra leads sin consentimiento explícito |
+| Checklist AUTOS | Placa → Ciudad → Canal → Horario requeridos antes de llamar `lead_capture` |
+| Email con prioridad | Clasificación automática `🔥 PRIORITARIO` vs `🚨 Estándar` por detección de palabras clave |
+| Destinatarios email | `tecnologia@`, `vargash@`, `mateusyd@`, `alertasmyl@gmail.com` |
+
+---
+
+## Key Production Fixes Applied
+
+### Fix: Flujo de consentimiento con saludo duplicado
+
+**Problema:** `handleConsentAccepted()` llamaba a `sendWelcomeMessage()` generando un segundo "¡Hola! Soy Myli..." después del aviso de privacidad.
+
+**Solución:** Los handlers de consentimiento ahora inyectan directamente su mensaje post-consentimiento y siembran `miliHistory[]`. `sendWelcomeMessage()` no se llama en el flujo de consentimiento.
+
+### Fix: SURA (Finesa) visible en `/aliadas/`
+
+**Causa raíz:** Producto MYL_171 ("Financia Periodos de Gracia") con `carrier_name = 'SURA (Finesa)'` estaba activo en la pestaña Products de Google Sheets. El código de aliadas deriva su lista de Products (no de Carriers), por lo que la entrada aparecía aunque Finesa no estuviera en CARRIER_URLS.
+
+**Resolución:** Cliente desactiva MYL_171 directamente en Google Sheets (`is_active = FALSE`). No requirió cambios de código.
+
+### Fix: Enlace de privacidad muerto en `/contacto/`
+
+**Problema:** `<a href="#">Política de Privacidad</a>` — enlace dead.
+
+**Solución:** Corregido a URL Google Drive del documento de política.
+
+---
+
+## Final Workflow Architecture (Myli V1.0)
+
+```
+[js/mili-chat.js — Widget Web]
+  POST {sessionId, message, pageContext, privacyConsented}
+       │
+       ▼
+[myli-chat — n8n GYrRnpph5IfjUtSh]
+  Webhook → Normalize Input → AI Agent (GPT-4.1-mini)
+       │
+       ├─ lead_capture → [myli-tool-lead-capture — KDkMUJsvATJ6mhjz]
+       │                   Validate → Sheets CONTACT_LEADS → Gmail
+       ├─ product_knowledge → [myli-tool-product-knowledge — ocwO0NsXB9QVgxqg]
+       ├─ human_handoff (toolCode)
+       ├─ appointment_booking (toolCode — placeholder)
+       └─ analytics_event (toolCode — placeholder)
+       │
+       ▼
+  Respond to Webhook → Widget
+```
+
+---
+
+## Privacy Consent Implementation (Both Layers)
+
+**Layer 1 — Frontend (`js/mili-chat.js`):**
+- Consent notice as first chat bubble; input disabled until answered.
+- `privacyConsented: boolean` sent on every POST to n8n.
+- Session-scoped only (JS variables — no localStorage).
+- `resetMili()` clears consent and re-shows the notice.
+
+**Layer 2 — AI Agent (n8n system prompt):**
+- `## PRIVACIDAD — REGLA CRÍTICA`: agent must not call `lead_capture` without explicit verbal consent.
+- Consent recorded in `mensaje` field: `"Consentimiento de privacidad: Sí."`.
+- Legal basis: Ley 1581 de 2012 / Habeas Data Colombia.
+
+---
+
+## Google Sheets Enhancements
+
+CONTACT_LEADS schema expanded from 8 → 14 columns. New fields:
+
+| Campo | Descripción |
+|---|---|
+| Conversación Completa | Transcripción completa del chat |
+| Resumen de la Conversación | Resumen generado por IA |
+| Horario de Contacto | Preferencia horaria del prospecto |
+| Canal de Contacto | Canal preferido (WhatsApp, llamada, email) |
+| Placa de Vehiculo | Placa del vehículo (AUTOS) |
+| Ciudad de Movilidad | Ciudad de circulación (AUTOS) |
+
+---
+
+## Outstanding Items Deferred to Phase 2
+
+| Ítem | Detalle |
+|---|---|
+| Nodos muertos en `myli-chat` | 5 nodos inalcanzables en el grafo del workflow — limpieza pendiente |
+| Schema Apps Script `/contacto/` | Formulario web sigue con schema de 8 columnas; no actualizado a 14 |
+| Bug filtro Carriers aliadas | `aliadas/index.html:489` — `c.is_active === '1'` vs `'TRUE'` siempre bypasea la pestaña Carriers |
+| Re-clic botones de consentimiento | Presionar por segunda vez reinicia el historial |
+| `handleConsentAcceptedCTA()` | No elimina la tarjeta de consent gate al re-clicar |
+| Deduplicación de leads | Sin detección de duplicados |
+| Compresión de imágenes | Logo V3 (2.55 MB), banners PNG, cards PNG — pendientes de optimización |
+| SEO | Sin `<title>`, `<meta description>`, `<meta og:image>` en ninguna página |
+| `sitemap.xml` / `robots.txt` | No existen |
+| 6 subpáginas vacías | Sin datos en Google Sheets |
+| WhatsApp AI | Fuera del alcance de Fase 1 |
+
+---
+
+## Phase 2 Reference — Portal Operativo Inteligente M&L
+
+Spec aprobada: `docs/superpowers/specs/2026-06-09-portal-operativo-inteligente-design.md`
+
+- Stack: Next.js 14 + Supabase + Vercel
+- Subdominio: `portal.segurosmyl.com` (a confirmar)
+- Myli y futuros bots como actores del sistema (`system_agent`)
+- Entidad core: `policies`
+- Alcance: operaciones internas únicamente en Fase 2
+
+## Myli V2 Roadmap Reference
+
+Fase 2–3: Canal WhatsApp (Meta API), Instagram, Facebook, CRM integrado, agendamiento de citas, analítica conversacional avanzada, automatizaciones comerciales.
+
+---
+
 ## IMPORTANT OPERATIONS NOTE
 
 ```
