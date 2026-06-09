@@ -1,9 +1,9 @@
 # SESSION HANDOFF — MYL Seguros Web (Post-Migration)
 
-**Date:** 2026-06-01
-**Status:** Myli Phase 1 fully wired to production. All systems operational. Stable commit: `c29fc13`.
-**Phase complete:** Website build + full client migration + Myli Phase 1 integration.
-**Next focus:** Post-launch validation, image compression, SEO.
+**Date:** 2026-06-09
+**Status:** Phase 1 fully closed. Myli consent flow live. Finesa removed. Stable commit: `1cb5b7a`.
+**Phase complete:** Website build + client migration + Myli Phase 1 + Phase 1 closure polish.
+**Next focus:** Phase 2 — Portal Operativo Inteligente M&L (spec approved). Deuda técnica: image compression, SEO, sitemap.
 
 ---
 
@@ -48,7 +48,7 @@ Pure static HTML/CSS/JS. No build step, no framework, no bundler. Files are serv
 | File | Role |
 |---|---|
 | `js/shared-layout.js` | Injects nav, footer, Myli shell, and mobile drawer HTML into shared-layout pages. |
-| `js/mili-chat.js` | Myli AI chatbot UI and API interaction. Routes to `https://n8n.segurosmyl.com/webhook/myli-chat`. **Frozen — do not modify logic.** |
+| `js/mili-chat.js` | Myli AI chatbot UI and API interaction. Routes to `https://n8n.segurosmyl.com/webhook/myli-chat`. Changes require explicit authorization from Cesar Eraso. |
 | `js/subpage-renderer.js` | Renders product subpages dynamically from JSON data. Contains `prioritizeCarriers()` global helper. |
 | `js/category-renderer.js` | Renders category landing pages. |
 | `js/category-meta.js` | Metadata for category pages. |
@@ -123,7 +123,7 @@ Pure static HTML/CSS/JS. No build step, no framework, no bundler. Files are serv
 
 | Asset | Status |
 |---|---|
-| `aliados_confianza_v4.png` | ✅ Fixed and deployed — commit `7c35776` (was blocked by `.gitignore`) |
+| `aliados_confianza_v5.png` | ✅ Deployed — commit `8e817bc`. v4 preserved in repo. |
 | Logo V3 (`Logo_Leon_V3_transparente.png`) | ⚠️ Live but unoptimized — 2.55 MB (see open items) |
 
 ### Site Build — Complete
@@ -137,10 +137,45 @@ Pure static HTML/CSS/JS. No build step, no framework, no bundler. Files are serv
 | Carrier priority rule (SURA first) | ✅ `prioritizeCarriers()` in `subpage-renderer.js` |
 | Desktop nav links fixed | ✅ `index.html` anchor hrefs corrected |
 | QA baseline | ✅ 323 PASS / 0 FAIL — all breakpoints |
+| Finesa removed from marquee + aliadas | ✅ `index.html` marquee (both loop instances) + `aliadas/index.html` CARRIER_URLS |
+| Privacy link fixed in contacto | ✅ `contacto/index.html:369` — `href="#"` → Google Drive URL |
+| Myli hybrid consent flow | ✅ Session-scoped, input gated, `privacyConsented` in n8n payload |
+| aliados_confianza v5 | ✅ `index.html` updated, asset committed |
 
 ---
 
 ## 4. Session Log
+
+### Session: 2026-06-09 — Phase 1 closure + Myli consent flow
+
+| Commit | Descripción |
+|---|---|
+| `5304bcb` | docs: add Portal Operativo spec and Phase 1 closure plan |
+| `39fa02d` | feat: Phase 1 closure — remove Finesa, fix privacy links, add Myli hybrid consent |
+| `9a4efea` | fix: update Myli consent flow to match client-approved UX wording |
+| `8e817bc` | feat: replace aliados_confianza_v4 with v5 |
+| `0d3fbdb` | fix: update Myli consent notice to approved greeting wording |
+| `3505059` | fix: add consent confirmation question to Myli greeting |
+| `1cb5b7a` | fix: consent buttons start as outline, turn red only on press |
+
+**Scope:**
+
+1. **Finesa eliminada** — logos del marquee en `index.html` (ambas instancias del loop) y entradas `'Finesa'` / `'SURA (Finesa)'` del mapa CARRIER_URLS en `aliadas/index.html`. Causa raíz de SURA en `/aliadas/`: producto MYL_171 activo en Google Sheets — cliente lo desactiva directamente.
+
+2. **Enlace de privacidad corregido** — `contacto/index.html:369`: `href="#"` → URL Google Drive de la política.
+
+3. **Flujo de consentimiento Myli** — Aviso como primer burbuja, input deshabilitado hasta elección, dos botones "✓ Sí" / "✗ No". Campo `privacyConsented: boolean` agregado a cada POST al webhook n8n. `resetMili()` limpia y muestra el aviso de nuevo. Bug corregido: el handler de aceptación llamaba a `sendWelcomeMessage()` generando saludo duplicado — eliminado; los handlers ahora inyectan el mensaje post-consentimiento directamente y siembran `miliHistory[]`.
+
+4. **Texto del aviso aprobado por cliente:**
+   > ¡Hola! Soy Myli, bienvenido/a a mi chat.\n\nAntes de que iniciemos nuestra conversación, quería comentarte que al utilizar este canal está aceptando nuestra Política de Privacidad, la cual puede consultar en este enlace:\n\n👉 Ver política de privacidad\n\n¿Estás de acuerdo?
+
+5. **Estilo de botones** — Ambos arrancan con contorno gris. Al presionar, el botón elegido vira a rojo (`#C2185B`).
+
+6. **aliados_confianza v5** — `index.html` actualizado, excepción `.gitignore` agregada.
+
+7. **Documentación** — Spec Portal Operativo (`docs/superpowers/specs/2026-06-09-portal-operativo-inteligente-design.md`) y plan Phase 1 closure (`docs/superpowers/plans/2026-06-09-phase1-closure.md`) creados y commiteados.
+
+---
 
 ### Session: 2026-06-01 — Myli Phase 1 website integration
 
@@ -209,16 +244,19 @@ Verified: Vercel deployed in ~10 s. New endpoint confirmed live in production HT
 
 ## 5. Remaining Open Items
 
-### Myli Post-Launch Validation — Required
+### Client Action Pending
 
-Per the integration spec, deployment is not considered confirmed until these steps pass in production:
+| Acción | Detalle |
+|---|---|
+| Desactivar MYL_171 en Google Sheets | Producto "Financia Periodos de Gracia" con `carrier_name = 'SURA (Finesa)'`. Poner `is_active = FALSE` en la pestaña Products. |
 
-1. Open `https://www.segurosmyl.com`
-2. Click the Myli chat FAB
-3. Send an insurance product question
-4. Verify AI response arrives from n8n
-5. Test lead capture flow
-6. Verify row creation in Google Sheets `CONTACT_LEADS`
+### Myli Post-Launch Polish (Deferred)
+
+| Item | Detalle |
+|---|---|
+| Re-clic en botones de consentimiento | Presionar "✓ Sí" / "✗ No" por segunda vez llama a `sendWelcomeMessage()` y reinicia el historial |
+| `handleConsentAcceptedCTA()` | No elimina la tarjeta de consent gate al hacer re-clic — muestra CTA de WhatsApp duplicado |
+| Bug filtro Carriers en aliadas | `aliadas/index.html:489` — `c.is_active === '1'` nunca coincide con `'TRUE'`; la pestaña Carriers siempre se bypasea |
 
 ### Social Links in Footer — Decision Required
 
@@ -275,19 +313,21 @@ The following subpages have no Sheets data (render empty states). Requires data 
 ### Duplicated mobile drawer markup
 Drawer HTML/JS copy-pasted into `comparar/index.html`, `contacto/index.html`, `aliadas/index.html`. Nav link changes must be applied to all three files AND `js/shared-layout.js`.
 
-### `mili-chat.js` frozen
-Chat logic must not be modified without explicit authorization. The webhook URL has been updated to production (`https://n8n.segurosmyl.com/webhook/myli-chat`). Only changes explicitly authorized by Cesar Eraso are permitted.
+### `mili-chat.js` — cambios requieren autorización
+El flujo de consentimiento, los handlers y la lógica de webhook están estables al cierre de Phase 1. Cambios futuros requieren autorización explícita de Cesar Eraso. Webhook URL: `https://n8n.segurosmyl.com/webhook/myli-chat`. Payload: `{sessionId, message, pageContext, privacyConsented}`.
 
 ### Carousel mobile `!important` override
 The carousel JS sets `track.style.transform` on an interval. On mobile, `transform: none !important` suppresses this. Any carousel JS refactor must revisit the mobile scroll-snap implementation.
 
 ---
 
-## 7. Next Session Starting Point — POST-LAUNCH
+## 7. Next Session Starting Point — PHASE 2 READY
 
 ### Current State
 
-Myli Phase 1 is fully deployed and wired. The website calls `https://n8n.segurosmyl.com/webhook/myli-chat` from `js/mili-chat.js`. All infrastructure is under client ownership.
+Phase 1 cerrada. Myli consent flow live y aprobado por el cliente. Finesa removida del sitio. Todos los sistemas bajo propiedad del cliente. Stable commit: `1cb5b7a`.
+
+El próximo proyecto mayor es el **Portal Operativo Inteligente M&L** — spec aprobada en `docs/superpowers/specs/2026-06-09-portal-operativo-inteligente-design.md`. Stack: Next.js 14 + Supabase + Vercel en subdominio `portal.segurosmyl.com`.
 
 ### Architecture (Deployed)
 
@@ -314,7 +354,8 @@ Myli Phase 1 is fully deployed and wired. The website calls `https://n8n.seguros
     "product_type": "",
     "product_name": "",
     "carrier_name": ""
-  }
+  },
+  "privacyConsented": true
 }
 ```
 
@@ -323,13 +364,21 @@ Myli Phase 1 is fully deployed and wired. The website calls `https://n8n.seguros
 
 ### Immediate Next Steps
 
-1. **Run post-launch validation** (see Section 5) — confirm chat works end-to-end in production
-2. **Resolve footer social links** — client decision required (IsaGIS vs. M&L Seguros accounts)
-3. **Logo V3 compression** — 2.55 MB → ≤300 KB
+1. **Cliente:** Desactivar MYL_171 en Google Sheets (`is_active = FALSE`) para que SURA (Finesa) desaparezca de `/aliadas/`.
+2. **Deuda técnica ligera:** Consent button re-click guard, `handleConsentAcceptedCTA()` cleanup, Carriers filter bug.
+3. **Performance:** Logo V3 compression (2.55 MB → ≤300 KB), banners/cards PNG → WebP.
+4. **SEO:** `<title>`, `<meta description>`, `sitemap.xml`, `robots.txt`.
 
-### Phase 2 — Reserved for Future
+### Phase 2 — Portal Operativo Inteligente M&L
 
-See ADR docs. Phase 2 scope: WhatsApp AI, CRM integration, persistent customer memory, analytics dashboards, avatar.
+Spec aprobada: `docs/superpowers/specs/2026-06-09-portal-operativo-inteligente-design.md`
+
+- Stack: Next.js 14 + Supabase + Vercel
+- Subdominio: `portal.segurosmyl.com` (a confirmar con cliente)
+- Myli y futuros bots como actores de primera clase (`system_agent`)
+- `policies` como entidad core de Phase 2
+- Alcance: operaciones internas únicamente — sin autoservicio del cliente en Phase 2
+- Decisiones abiertas en Sección 13 del spec (subdomain, OAuth client, Supabase ownership)
 
 ---
 
@@ -351,7 +400,7 @@ node qa-mobile-phase-a.js
 
 ### Stable baseline
 
-Current stable commit: `c29fc13` on branch `main`.
+Current stable commit: `1cb5b7a` on branch `main`.
 GitHub: `https://github.com/segurosmyl/myl-seguros-web`
 
 ### Push correctly
