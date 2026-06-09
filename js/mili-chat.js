@@ -83,7 +83,7 @@ function sendWelcomeMessage() {
 
 /* ── Aviso de privacidad y consentimiento ────────────────── */
 function showConsentNotice() {
-  const notice = `¡Hola! Soy Myli, tu asesora de seguros en Consultores M&L, antes de que iniciemos nuestra conversación, quería comentarte que al utilizar este canal está aceptando nuestra Política de Privacidad, la cual puede consultar en este enlace 👉 <a href="${MYLI_PRIVACY_POLICY_URL}" target="_blank" rel="noopener" style="color:#C2185B;">Ver Política de Privacidad</a>.\n\n[CONSENT_BUTTONS]`;
+  const notice = `¡Hola! Soy Myli, bienvenido/a a mi chat.\n\nAntes de que iniciemos nuestra conversación, quería comentarte que al utilizar este canal está aceptando nuestra Política de Privacidad, la cual puede consultar en este enlace:\n\n👉 <a href="${MYLI_PRIVACY_POLICY_URL}" target="_blank" rel="noopener" style="color:#C2185B;">Ver política de privacidad</a>\n\n[CONSENT_BUTTONS]`;
   appendBubble('mili', notice);
 }
 
