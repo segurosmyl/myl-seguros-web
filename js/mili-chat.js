@@ -8,12 +8,15 @@
    ============================================================ */
 
 const MYLI_WEBHOOK = 'https://n8n.segurosmyl.com/webhook/myli-chat';
+const MYLI_PRIVACY_POLICY_URL = 'https://drive.google.com/file/d/1JPyAjYV1U9S77llbk6_jZ4rtJsbaXXgb/view?usp=sharing';
 
 /* ── Estado del chat ─────────────────────────────────────── */
 let miliContext = null;
 let miliSessionId = null;
 let miliHistory = [];
 let miliTyping = false;
+let miliPrivacyConsented = false;
+let miliPrivacyAnswered = false;
 
 /* ── Punto de entrada principal ──────────────────────────── */
 function openMili(ctx = {}) {
@@ -35,14 +38,19 @@ function openMili(ctx = {}) {
   if (miliHistory.length === 0) {
     miliSessionId = 'myli_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
     clearMessages();
-    renderQuickChips();
-    sendWelcomeMessage();
+    const input = document.getElementById('miliInput');
+    const sendBtn = document.getElementById('miliSendBtn');
+    const chipsEl = document.getElementById('miliQuickChips');
+    if (input) input.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+    if (chipsEl) chipsEl.style.display = 'none';
+    showConsentNotice();
   }
 
-  // Focus en el input
+  // Focus en el input solo si está habilitado
   setTimeout(() => {
     const input = document.getElementById('miliInput');
-    if (input) input.focus();
+    if (input && !input.disabled) input.focus();
   }, 300);
 }
 
@@ -73,6 +81,53 @@ function sendWelcomeMessage() {
   miliHistory = [{ role: 'assistant', content: greeting.replace(/<[^>]+>/g, '') }];
 }
 
+/* ── Aviso de privacidad y consentimiento ────────────────── */
+function showConsentNotice() {
+  const notice = `¡Hola! Soy <strong>Myli</strong>, tu asesora de seguros en M&L.\n\nAntes de comenzar, quiero contarte cómo usamos tu información:\n\n• Puedo orientarte sobre seguros sin necesitar tus datos personales.\n• Si decides cotizar o contactar un asesor, necesitaré tu nombre y contacto.\n• Tu información solo se usa para tu asesoría y nunca se comparte con terceros.\n\n<a href="${MYLI_PRIVACY_POLICY_URL}" target="_blank" rel="noopener" style="color:#C2185B;font-size:12px;">Ver política de privacidad completa</a>\n\n[CONSENT_BUTTONS]`;
+  appendBubble('mili', notice);
+}
+
+function renderConsentButtons() {
+  return `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+    <button onclick="handleConsentAccepted()"
+      style="background:#C2185B;color:#fff;border:none;padding:10px 18px;border-radius:8px;
+      font-size:13px;font-weight:600;cursor:pointer;flex:1;min-width:120px;">
+      ✓ Acepto
+    </button>
+    <button onclick="handleConsentInformationalOnly()"
+      style="background:transparent;color:#666;border:1px solid #ccc;padding:10px 18px;
+      border-radius:8px;font-size:13px;cursor:pointer;flex:1;min-width:120px;">
+      Solo información
+    </button>
+  </div>`;
+}
+
+function handleConsentAccepted() {
+  miliPrivacyConsented = true;
+  miliPrivacyAnswered = true;
+  const input = document.getElementById('miliInput');
+  const sendBtn = document.getElementById('miliSendBtn');
+  if (input) { input.disabled = false; input.focus(); }
+  if (sendBtn) sendBtn.disabled = false;
+  const chipsEl = document.getElementById('miliQuickChips');
+  if (chipsEl) chipsEl.style.display = 'flex';
+  renderQuickChips();
+  sendWelcomeMessage();
+}
+
+function handleConsentInformationalOnly() {
+  miliPrivacyConsented = false;
+  miliPrivacyAnswered = true;
+  const input = document.getElementById('miliInput');
+  const sendBtn = document.getElementById('miliSendBtn');
+  if (input) { input.disabled = false; input.focus(); }
+  if (sendBtn) sendBtn.disabled = false;
+  const chipsEl = document.getElementById('miliQuickChips');
+  if (chipsEl) chipsEl.style.display = 'flex';
+  renderQuickChips();
+  sendWelcomeMessage();
+}
+
 /* ── Enviar mensaje del usuario ──────────────────────────── */
 async function sendMiliUserMessage(text) {
   if (!text.trim() || miliTyping) return;
@@ -97,10 +152,10 @@ async function sendMiliUserMessage(text) {
     removeTyping(typingId);
     miliTyping = false;
 
-    // Detectar CTA de WhatsApp
+    // Detectar CTA de WhatsApp (requiere consentimiento)
     let finalResponse = response;
     if (shouldShowWhatsAppCTA(text, response)) {
-      finalResponse += '\n\n[CTA_WHATSAPP]';
+      finalResponse += miliPrivacyConsented ? '\n\n[CTA_WHATSAPP]' : '\n\n[CONSENT_REQUIRED_CTA]';
     }
 
     appendBubble('mili', finalResponse);
@@ -122,6 +177,7 @@ async function callMiliAPI(userMessage) {
       sessionId: miliSessionId,
       message: userMessage,
       pageContext: buildPageContext(),
+      privacyConsented: miliPrivacyConsented,
     }),
   });
 
@@ -220,12 +276,25 @@ function appendBubble(role, text) {
   const bubble = document.createElement('div');
   bubble.className = role === 'mili' ? 'bubble-mili' : 'bubble-user';
 
-  // Detectar CTA placeholder
-  if (text.includes('[CTA_WHATSAPP]')) {
+  if (text.includes('[CONSENT_BUTTONS]')) {
+    text = text.replace('[CONSENT_BUTTONS]', '').trim();
+    bubble.innerHTML = formatMiliText(text);
+    msgs.appendChild(bubble);
+    const btns = document.createElement('div');
+    btns.innerHTML = renderConsentButtons();
+    msgs.appendChild(btns);
+  } else if (text.includes('[CONSENT_REQUIRED_CTA]')) {
+    text = text.replace('[CONSENT_REQUIRED_CTA]', '').trim();
+    bubble.innerHTML = formatMiliText(text);
+    msgs.appendChild(bubble);
+    const cta = document.createElement('div');
+    cta.className = 'consent-required-cta';
+    cta.innerHTML = renderConsentRequiredCTA();
+    msgs.appendChild(cta);
+  } else if (text.includes('[CTA_WHATSAPP]')) {
     text = text.replace('[CTA_WHATSAPP]', '').trim();
     bubble.innerHTML = formatMiliText(text);
     msgs.appendChild(bubble);
-
     const ctaWrap = document.createElement('div');
     ctaWrap.innerHTML = renderWhatsAppCTA();
     msgs.appendChild(ctaWrap);
@@ -261,6 +330,36 @@ function renderWhatsAppCTA() {
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     Cotizar por WhatsApp →
   </a>`;
+}
+
+/* ── CTA con gate de consentimiento ─────────────────────── */
+function renderConsentRequiredCTA() {
+  return `<div style="background:#fff3f7;border:1px solid #f8c0d4;border-radius:8px;padding:12px 16px;margin-top:4px;">
+    <p style="font-size:13px;color:#333;margin:0 0 10px;">Para cotizar o contactar un asesor necesito tu autorización de tratamiento de datos.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="handleConsentAcceptedCTA()"
+        style="background:#C2185B;color:#fff;border:none;padding:8px 16px;border-radius:6px;
+        font-size:13px;font-weight:600;cursor:pointer;">
+        ✓ Acepto y continuar
+      </button>
+      <button onclick="handleConsentDeclinedCTA()"
+        style="background:transparent;color:#666;border:1px solid #ccc;padding:8px 16px;
+        border-radius:6px;font-size:13px;cursor:pointer;">
+        Solo información
+      </button>
+    </div>
+  </div>`;
+}
+
+function handleConsentAcceptedCTA() {
+  miliPrivacyConsented = true;
+  miliPrivacyAnswered = true;
+  const waText = '¡Gracias! Ahora te conecto con un asesor M&L para tu cotización.\n\n[CTA_WHATSAPP]';
+  appendBubble('mili', waText);
+}
+
+function handleConsentDeclinedCTA() {
+  appendBubble('mili', 'Sin problema. Puedo seguir orientándote sobre seguros de forma general. ¿Qué otras dudas tienes?');
 }
 
 /* ── Typing indicator ────────────────────────────────────── */
@@ -304,12 +403,17 @@ function clearMessages() {
 
 /* ── Nueva conversación ──────────────────────────────────── */
 function resetMili() {
+  miliPrivacyConsented = false;
+  miliPrivacyAnswered = false;
   miliSessionId = 'myli_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
   clearMessages();
+  const input = document.getElementById('miliInput');
+  const sendBtn = document.getElementById('miliSendBtn');
   const chipsEl = document.getElementById('miliQuickChips');
-  if (chipsEl) chipsEl.style.display = 'flex';
-  renderQuickChips();
-  sendWelcomeMessage();
+  if (input) input.disabled = true;
+  if (sendBtn) sendBtn.disabled = true;
+  if (chipsEl) chipsEl.style.display = 'none';
+  showConsentNotice();
 }
 
 /* ── Event listeners ─────────────────────────────────────── */
