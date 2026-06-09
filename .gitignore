@@ -12,6 +12,7 @@ qa-screenshots-full/
 uploads/*
 !uploads/aliados_confianza_v3.png
 !uploads/aliados_confianza_v4.png
+!uploads/aliados_confianza_v5.png
 *.mp4
 !Video_Banner2_sin_audio.mp4
 *_BACKUP_*.js
