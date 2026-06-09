@@ -89,12 +89,12 @@ function showConsentNotice() {
 
 function renderConsentButtons() {
   return `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-    <button onclick="handleConsentAccepted()"
-      style="background:#C2185B;color:#fff;border:none;padding:10px 18px;border-radius:8px;
+    <button onclick="this.style.background='#C2185B';this.style.color='#fff';this.style.border='none';handleConsentAccepted()"
+      style="background:transparent;color:#666;border:1px solid #ccc;padding:10px 18px;border-radius:8px;
       font-size:13px;font-weight:600;cursor:pointer;flex:1;min-width:100px;">
       ✓ Sí
     </button>
-    <button onclick="handleConsentInformationalOnly()"
+    <button onclick="this.style.background='#C2185B';this.style.color='#fff';this.style.border='none';handleConsentInformationalOnly()"
       style="background:transparent;color:#666;border:1px solid #ccc;padding:10px 18px;
       border-radius:8px;font-size:13px;cursor:pointer;flex:1;min-width:100px;">
       ✗ No
