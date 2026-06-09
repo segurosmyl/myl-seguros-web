@@ -83,7 +83,7 @@ function sendWelcomeMessage() {
 
 /* ── Aviso de privacidad y consentimiento ────────────────── */
 function showConsentNotice() {
-  const notice = `¡Hola! Soy <strong>Myli</strong>, tu asesora de seguros en M&L.\n\nAntes de comenzar, quiero contarte cómo usamos tu información:\n\n• Puedo orientarte sobre seguros sin necesitar tus datos personales.\n• Si decides cotizar o contactar un asesor, necesitaré tu nombre y contacto.\n• Tu información solo se usa para tu asesoría y nunca se comparte con terceros.\n\n<a href="${MYLI_PRIVACY_POLICY_URL}" target="_blank" rel="noopener" style="color:#C2185B;font-size:12px;">Ver política de privacidad completa</a>\n\n[CONSENT_BUTTONS]`;
+  const notice = `¡Hola! Soy Myli, tu asesora de seguros en Consultores M&L, antes de que iniciemos nuestra conversación, quería comentarte que al utilizar este canal está aceptando nuestra Política de Privacidad, la cual puede consultar en este enlace 👉 <a href="${MYLI_PRIVACY_POLICY_URL}" target="_blank" rel="noopener" style="color:#C2185B;">Ver Política de Privacidad</a>.\n\n[CONSENT_BUTTONS]`;
   appendBubble('mili', notice);
 }
 
@@ -91,13 +91,13 @@ function renderConsentButtons() {
   return `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
     <button onclick="handleConsentAccepted()"
       style="background:#C2185B;color:#fff;border:none;padding:10px 18px;border-radius:8px;
-      font-size:13px;font-weight:600;cursor:pointer;flex:1;min-width:120px;">
-      ✓ Acepto
+      font-size:13px;font-weight:600;cursor:pointer;flex:1;min-width:100px;">
+      ✓ Sí
     </button>
     <button onclick="handleConsentInformationalOnly()"
       style="background:transparent;color:#666;border:1px solid #ccc;padding:10px 18px;
-      border-radius:8px;font-size:13px;cursor:pointer;flex:1;min-width:120px;">
-      Solo información
+      border-radius:8px;font-size:13px;cursor:pointer;flex:1;min-width:100px;">
+      ✗ No
     </button>
   </div>`;
 }
@@ -107,12 +107,14 @@ function handleConsentAccepted() {
   miliPrivacyAnswered = true;
   const input = document.getElementById('miliInput');
   const sendBtn = document.getElementById('miliSendBtn');
+  const chipsEl = document.getElementById('miliQuickChips');
+  const acceptanceMsg = `Adicionalmente, si luego de finalizada nuestra conversación, usted desea que lo contacte un asesor, aceptando nuestra política de privacidad, Consultores de Seguros M&L podrá contactarlo por el medio de comunicación de su preferencia.\n\nMuchas gracias por aceptar nuestra política de privacidad.\n\n¿En qué puedo asesorarlo el día de hoy?`;
+  appendBubble('mili', acceptanceMsg);
+  miliHistory = [{ role: 'assistant', content: acceptanceMsg }];
   if (input) { input.disabled = false; input.focus(); }
   if (sendBtn) sendBtn.disabled = false;
-  const chipsEl = document.getElementById('miliQuickChips');
   if (chipsEl) chipsEl.style.display = 'flex';
   renderQuickChips();
-  sendWelcomeMessage();
 }
 
 function handleConsentInformationalOnly() {
@@ -120,12 +122,14 @@ function handleConsentInformationalOnly() {
   miliPrivacyAnswered = true;
   const input = document.getElementById('miliInput');
   const sendBtn = document.getElementById('miliSendBtn');
+  const chipsEl = document.getElementById('miliQuickChips');
+  const declineMsg = `No hay problema.\n\nPuedo orientarlo y resolver sus dudas sobre nuestros productos y servicios de seguros.\n\nSin embargo, si posteriormente desea solicitar una cotización o que uno de nuestros asesores lo contacte, será necesario aceptar nuestra Política de Privacidad y Tratamiento de Datos.\n\n¿En qué puedo ayudarlo el día de hoy?`;
+  appendBubble('mili', declineMsg);
+  miliHistory = [{ role: 'assistant', content: declineMsg }];
   if (input) { input.disabled = false; input.focus(); }
   if (sendBtn) sendBtn.disabled = false;
-  const chipsEl = document.getElementById('miliQuickChips');
   if (chipsEl) chipsEl.style.display = 'flex';
   renderQuickChips();
-  sendWelcomeMessage();
 }
 
 /* ── Enviar mensaje del usuario ──────────────────────────── */
