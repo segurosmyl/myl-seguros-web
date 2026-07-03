@@ -174,10 +174,41 @@
     .privacy-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; }
     .privacy-note a { color: var(--color-accent); text-decoration: none; }
 
+    /* Comparte nuestro sitio web — card full-width bajo el área de contacto */
+    .share-card {
+      grid-column: 1 / -1;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .share-card .share-qr {
+      width: 132px; min-width: 132px; height: 132px;
+      background: #fff;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+    }
+    .share-card .share-qr img { width: 100%; height: 100%; display: block; }
+    .share-card .share-text { min-width: 0; }
+    .share-card .share-text h4 {
+      font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px;
+    }
+    .share-card .share-text p {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin: 0 0 10px; max-width: 620px;
+    }
+    .share-card .share-url {
+      font-size: 14px; font-weight: 700; color: var(--color-accent); word-break: break-word;
+    }
+
     @media (max-width: 760px) {
       .contacto-body { grid-template-columns: 1fr; gap: 28px; }
       .form-row { grid-template-columns: 1fr; }
       .form-panel { padding: 24px 20px; }
+      .share-card { flex-direction: column; text-align: center; gap: 18px; padding: 24px 20px; }
+      .share-card .share-text p { max-width: none; }
     }
   </style>
 </head>
@@ -413,6 +444,15 @@
       </div>
       <div class="info-item">
         <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Celular</div>
+          <div class="info-value">+57 320 278 0611</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
         <div>
@@ -441,6 +481,18 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Comparte nuestro sitio web (card full-width) -->
+  <div class="share-card">
+    <div class="share-qr">
+      <img src="/public/images/qr/qr-segurosmyl.png" alt="Código QR del sitio web de M&amp;L Seguros: www.segurosmyl.com" width="132" height="132">
+    </div>
+    <div class="share-text">
+      <h4>Comparte nuestro sitio web</h4>
+      <p>¿Conoces a alguien que necesite asesoría en seguros? Comparte nuestro sitio web escaneando este código QR desde otro dispositivo.</p>
+      <div class="share-url">www.segurosmyl.com</div>
+    </div>
   </div>
 </div>
 
